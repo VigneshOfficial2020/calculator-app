@@ -13,7 +13,12 @@ import isNumber from "./isNumber";
  *   operation:String  +, -, etc.
  */
 export default function calculate(obj, buttonName) {
+  
+  console.log("calculate - obj -", obj);
+  console.log("calculate - buttonName -", buttonName);
+
   if (buttonName === "AC") {
+    console.log('calculate - if (buttonName === "AC") ');
     return {
       total: null,
       next: null,
@@ -22,19 +27,32 @@ export default function calculate(obj, buttonName) {
   }
 
   if (isNumber(buttonName)) {
+    console.log("calculate - if (isNumber(buttonName)) ", isNumber(buttonName));
     if (buttonName === "0" && obj.next === "0") {
+      console.log('calculate - if (buttonName === "0" && obj.next === "0") ');
       return {};
     }
     // If there is an operation, update next
     if (obj.operation) {
+      console.log(
+        "calculate - if (isNumber(buttonName)) - if (obj.operation) ",
+      );
       if (obj.next) {
+        console.log(
+          "calculate - if (isNumber(buttonName)) - if (obj.operation) -> if (obj.next) ",
+        );
         return { next: obj.next + buttonName };
       }
       return { next: buttonName };
     }
     // If there is no operation, update next and clear the value
     if (obj.next) {
+      console.log("calculate - if (isNumber(buttonName)) - if (obj.next) ");
       const next = obj.next === "0" ? buttonName : obj.next + buttonName;
+      console.log(
+        "calculate - if (isNumber(buttonName)) - if (obj.next) -> next",
+        next,
+      );
       return {
         next,
         total: null,
@@ -47,8 +65,16 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === "%") {
+    console.log('calculate - if (buttonName === " % ") ');
     if (obj.operation && obj.next) {
+      console.log(
+        'calculate - if (buttonName === " % ") -> if (obj.operation && obj.next)',
+      );
       const result = operate(obj.total, obj.next, obj.operation);
+      console.log(
+        'calculate - if (buttonName === " % ") -> if (obj.operation && obj.next) -> result - ',
+        result,
+      );
       return {
         total: Big(result)
           .div(Big("100"))
@@ -58,6 +84,10 @@ export default function calculate(obj, buttonName) {
       };
     }
     if (obj.next) {
+      console.log(
+        'calculate - if (buttonName === " % ") -> obj.next ',
+        obj.next,
+      );
       return {
         next: Big(obj.next)
           .div(Big("100"))
@@ -68,9 +98,20 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === ".") {
+    console.log(
+      'calculate - if (buttonName === " % ") -> if (buttonName === ".") ',
+    );
     if (obj.next) {
+      console.log(
+        'calculate - if (buttonName === " % ") -> if (buttonName === ".") -> if (obj.next) ',
+        obj.next,
+      );
       // ignore a . if the next number already has one
       if (obj.next.includes(".")) {
+        console.log(
+          'calculate - if (buttonName === " % ") -> if (buttonName === ".") -> if (obj.next) -> if (obj.next.includes(".")) ',
+          obj.next,
+        );
         return {};
       }
       return { next: obj.next + "." };
@@ -79,7 +120,11 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === "=") {
+    console.log('calculate - if (buttonName === "=") ');
     if (obj.next && obj.operation) {
+      console.log(
+        'calculate - if (buttonName === "=") -> if (obj.next && obj.operation) ',
+      );
       return {
         total: operate(obj.total, obj.next, obj.operation),
         next: null,
@@ -92,10 +137,14 @@ export default function calculate(obj, buttonName) {
   }
 
   if (buttonName === "+/-") {
+    console.log('calculate - if (buttonName === "+/-") ');
+
     if (obj.next) {
+      console.log('calculate - if (buttonName === "+/-") -> if (obj.next) ');
       return { next: (-1 * parseFloat(obj.next)).toString() };
     }
     if (obj.total) {
+      console.log('calculate - if (buttonName === "+/-") -> if (obj.total) ');
       return { total: (-1 * parseFloat(obj.total)).toString() };
     }
     return {};
@@ -111,6 +160,7 @@ export default function calculate(obj, buttonName) {
 
   // User pressed an operation button and there is an existing operation
   if (obj.operation) {
+    console.log("calculate - if (obj.operation) ");
     return {
       total: operate(obj.total, obj.next, obj.operation),
       next: null,
@@ -122,6 +172,7 @@ export default function calculate(obj, buttonName) {
 
   // The user hasn't typed a number yet, just save the operation
   if (!obj.next) {
+    console.log("calculate - if (!obj.next) ");
     return { operation: buttonName };
   }
 
